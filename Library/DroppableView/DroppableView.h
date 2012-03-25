@@ -14,7 +14,7 @@
 - (void) droppableViewBeganDragging: (DroppableView*) view;
 - (void) droppableView: (DroppableView*) view enteredTarget: (UIView*) target;
 - (void) droppableView: (DroppableView*) view leftTarget: (UIView*) target;
-- (BOOL) shouldAnimateDroppableViewBack: (DroppableView*) view wasDraggedOnTarget: (UIView*) target;
+- (BOOL) shouldAnimateDroppableViewBack: (DroppableView*) view wasDroppedOnTarget: (UIView*) target;
 - (void) droppableViewEndedDragging: (DroppableView*) view;
 @end
 

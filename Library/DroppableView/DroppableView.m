@@ -132,8 +132,8 @@
 
 - (BOOL) handleDroppedView;
 {
-	if ([mDelegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDraggedOnTarget:)]) {
-        return ![mDelegate shouldAnimateDroppableViewBack: self wasDraggedOnTarget: mDropTarget];
+	if ([mDelegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
+        return ![mDelegate shouldAnimateDroppableViewBack: self wasDroppedOnTarget: mDropTarget];
     }
     
     return NO;

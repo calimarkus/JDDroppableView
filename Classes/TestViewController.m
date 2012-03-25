@@ -188,7 +188,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 #pragma -
 #pragma droppabe view delegate
 
-- (BOOL) shouldAnimateDroppableViewBack: (DroppableView *)view wasDraggedOnTarget: (UIView *)target
+- (BOOL) shouldAnimateDroppableViewBack: (DroppableView *)view wasDroppedOnTarget: (UIView *)target
 {
 	[self droppableView: view leftTarget: target];
     
