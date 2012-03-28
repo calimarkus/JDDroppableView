@@ -26,7 +26,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	[super loadView];
     self.view.backgroundColor = [UIColor viewFlipsideBackgroundColor];
     
-    // increate viewcount on ipad
+    // increase viewcount on ipad
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         sCOUNT_OF_VIEWS_HORICONTALLY = 6;
         sCOUNT_OF_VIEWS_VERTICALLY   = 4.3;
