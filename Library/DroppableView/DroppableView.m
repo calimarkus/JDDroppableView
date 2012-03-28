@@ -15,7 +15,7 @@
 - (void) endDrag;
 
 - (void) changeSuperView;
-- (void) handleDroppedView: (id) sender;
+- (BOOL) handleDroppedView;
 @end
 
 
@@ -130,7 +130,7 @@
 	[UIView commitAnimations];
 }
 
-- (BOOL) handleDroppedView;
+- (BOOL) handleDroppedView
 {
 	if ([mDelegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
         return ![mDelegate shouldAnimateDroppableViewBack: self wasDroppedOnTarget: mDropTarget];
