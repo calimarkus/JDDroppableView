@@ -7,7 +7,7 @@
 //
 
 #import "TestViewController.h"
-#import "DroppableView.h"
+#import "JDDroppableView.h"
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -42,7 +42,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     button.showsTouchWhenHighlighted = YES;
     button.adjustsImageWhenHighlighted = YES;
     button.frame = CGRectMake(20,
-                              self.view.frame.size.height - button.frame.size.height - 40,
+                              self.view.frame.size.height - 52,
                               self.view.frame.size.width - 40, // width
                               32); // height
     [self.view addSubview: button];
@@ -158,7 +158,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	CGSize size = CGSizeMake(((contentWidth-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_HORICONTALLY-1))/sCOUNT_OF_VIEWS_HORICONTALLY),
                              floor((contentHeight-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_VERTICALLY-1))/sCOUNT_OF_VIEWS_VERTICALLY));
 	
-    DroppableView * dropview = [[DroppableView alloc] initWithScrollView: mScrollView
+    JDDroppableView * dropview = [[JDDroppableView alloc] initWithScrollView: mScrollView
                                                            andDropTarget: mDropTarget];
     dropview.backgroundColor = [UIColor blackColor];
     dropview.layer.cornerRadius = 3.0;
@@ -193,7 +193,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 #pragma -
 #pragma droppabe view delegate
 
-- (BOOL) shouldAnimateDroppableViewBack: (DroppableView *)view wasDroppedOnTarget: (UIView *)target
+- (BOOL) shouldAnimateDroppableViewBack: (JDDroppableView *)view wasDroppedOnTarget: (UIView *)target
 {
 	[self droppableView: view leftTarget: target];
     
@@ -218,7 +218,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     return NO;
 }
 
-- (void) droppableViewBeganDragging:(DroppableView *)view
+- (void) droppableViewBeganDragging:(JDDroppableView *)view
 {
 	[UIView beginAnimations: @"drag" context: nil];
 	view.backgroundColor = [UIColor colorWithRed: 1 green: 0.5 blue: 0 alpha: 1];
@@ -226,19 +226,19 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	[UIView commitAnimations];
 }
 
-- (void) droppableView:(DroppableView *)view enteredTarget:(UIView *)target
+- (void) droppableView:(JDDroppableView *)view enteredTarget:(UIView *)target
 {
     target.transform = CGAffineTransformMakeScale(1.5, 1.5);
     target.backgroundColor = [UIColor greenColor];
 }
 
-- (void) droppableView:(DroppableView *)view leftTarget:(UIView *)target
+- (void) droppableView:(JDDroppableView *)view leftTarget:(UIView *)target
 {
     target.transform = CGAffineTransformMakeScale(1.0, 1.0);
     target.backgroundColor = [UIColor orangeColor];
 }
 
-- (void) droppableViewEndedDragging:(DroppableView *)view
+- (void) droppableViewEndedDragging:(JDDroppableView *)view
 {
 	[UIView beginAnimations: @"drag" context: nil];
 	view.backgroundColor = [UIColor blackColor];

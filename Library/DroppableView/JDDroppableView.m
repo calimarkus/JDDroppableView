@@ -1,15 +1,15 @@
 //
-//  DroppableView.m
-//  DroppableViewTest
+//  JDDroppableView.m
+//  JDDroppableView
 //
 //  Created by Markus Emrich on 01.07.10.
 //  Copyright 2010 Markus Emrich. All rights reserved.
 //
 
-#import "DroppableView.h"
+#import "JDDroppableView.h"
 
 
-@interface DroppableView (hidden)
+@interface JDDroppableView (hidden)
 - (void) beginDrag;
 - (void) dragAtPosition: (UITouch *) touch;
 - (void) endDrag;
@@ -20,7 +20,7 @@
 
 
 
-@implementation DroppableView
+@implementation JDDroppableView
 
 @synthesize delegate = mDelegate;
 

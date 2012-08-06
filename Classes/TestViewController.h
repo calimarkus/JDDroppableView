@@ -6,9 +6,9 @@
 //  Copyright Markus Emrich 2010. All rights reserved.
 //
 
-#import "DroppableView.h"
+#import "JDDroppableView.h"
 
-@interface TestViewController : UIViewController <DroppableViewDelegate>
+@interface TestViewController : UIViewController <JDDroppableViewDelegate>
 {
     UIScrollView* mScrollView;
     UIView* mDropTarget;
