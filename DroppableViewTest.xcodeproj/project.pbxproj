@@ -17,7 +17,6 @@
 		D286AD89151F9B5D00110CE1 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD7F151F9B5D00110CE1 /* TestViewController.m */; };
 		D286AD8A151F9B5D00110CE1 /* DroppableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD83151F9B5D00110CE1 /* DroppableView.m */; };
 		D286AD8C151F9B5D00110CE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD86151F9B5D00110CE1 /* main.m */; };
-		D286AD92151F9CC100110CE1 /* UIView+position.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD91151F9CC100110CE1 /* UIView+position.m */; };
 		D2F52C31151FA85F004241E6 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D2F52C2F151FA85F004241E6 /* Default.png */; };
 		D2F52C32151FA85F004241E6 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2F52C30151FA85F004241E6 /* Default@2x.png */; };
 /* End PBXBuildFile section */
@@ -39,9 +38,6 @@
 		D286AD85151F9B5D00110CE1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D286AD86151F9B5D00110CE1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D286AD87151F9B5D00110CE1 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		D286AD8F151F9CC100110CE1 /* extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = extensions.h; sourceTree = "<group>"; };
-		D286AD90151F9CC100110CE1 /* UIView+position.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+position.h"; sourceTree = "<group>"; };
-		D286AD91151F9CC100110CE1 /* UIView+position.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+position.m"; sourceTree = "<group>"; };
 		D2F52C2F151FA85F004241E6 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		D2F52C30151FA85F004241E6 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,9 +79,9 @@
 		D286AD4C151F966D00110CE1 = {
 			isa = PBXGroup;
 			children = (
+				D286AD84151F9B5D00110CE1 /* SupportingFiles */,
 				D286AD7B151F9B5D00110CE1 /* Classes */,
 				D286AD80151F9B5D00110CE1 /* Library */,
-				D286AD84151F9B5D00110CE1 /* SupportingFiles */,
 				D272CB09151FA4EF006F8770 /* Ressources */,
 				D286AD5A151F966E00110CE1 /* Frameworks */,
 				D286AD58151F966E00110CE1 /* Products */,
@@ -125,7 +121,6 @@
 		D286AD80151F9B5D00110CE1 /* Library */ = {
 			isa = PBXGroup;
 			children = (
-				D286AD8E151F9CC100110CE1 /* UIKitExtensions */,
 				D286AD81151F9B5D00110CE1 /* DroppableView */,
 			);
 			path = Library;
@@ -148,16 +143,6 @@
 				D286AD87151F9B5D00110CE1 /* Prefix.pch */,
 			);
 			path = SupportingFiles;
-			sourceTree = "<group>";
-		};
-		D286AD8E151F9CC100110CE1 /* UIKitExtensions */ = {
-			isa = PBXGroup;
-			children = (
-				D286AD8F151F9CC100110CE1 /* extensions.h */,
-				D286AD90151F9CC100110CE1 /* UIView+position.h */,
-				D286AD91151F9CC100110CE1 /* UIView+position.m */,
-			);
-			path = UIKitExtensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,7 +171,7 @@
 		D286AD4E151F966D00110CE1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = D286AD51151F966D00110CE1 /* Build configuration list for PBXProject "DroppableViewTest" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -228,7 +213,6 @@
 				D286AD89151F9B5D00110CE1 /* TestViewController.m in Sources */,
 				D286AD8A151F9B5D00110CE1 /* DroppableView.m in Sources */,
 				D286AD8C151F9B5D00110CE1 /* main.m in Sources */,
-				D286AD92151F9CC100110CE1 /* UIView+position.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +236,7 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_THUMB_SUPPORT = NO;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
@@ -267,6 +252,7 @@
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SupportingFiles/Prefix.pch;
+				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;

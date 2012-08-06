@@ -34,33 +34,38 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     
     // add button
     UIButton* button = [UIButton buttonWithType: UIButtonTypeCustom];
+    button.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleWidth;
     [button setTitle: @"+" forState: UIControlStateNormal];
     [button addTarget: self action: @selector(addView:) forControlEvents: UIControlEventTouchUpInside];
-    button.frame = CGRectMake(20, 0, self.view.frameWidth - 40, 32);
     button.backgroundColor = [UIColor colorWithRed: 0.75 green: 0.2 blue: 0 alpha: 1.0];
     button.layer.cornerRadius = 5.0;
     button.showsTouchWhenHighlighted = YES;
     button.adjustsImageWhenHighlighted = YES;
-    button.frameBottom = self.view.frameBottom - 40;
+    button.frame = CGRectMake(20,
+                              self.view.frame.size.height - button.frame.size.height - 40,
+                              self.view.frame.size.width - 40, // width
+                              32); // height
     [self.view addSubview: button];
 	
 	// drop target
 	mDropTarget = [[UIView alloc] init];
+    mDropTarget.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	mDropTarget.backgroundColor = [UIColor orangeColor];
 	mDropTarget.frame = CGRectMake(0, 0, 30, 30);
-	mDropTarget.center = CGPointMake(self.view.frameWidth/2, button.frameY - 50);
+	mDropTarget.center = CGPointMake(self.view.frame.size.width/2, button.frame.origin.y - 50);
     mDropTarget.layer.cornerRadius = 15;
 	[self.view addSubview: mDropTarget];
     [mDropTarget release];
 	
 	// scrollview
 	mScrollView = [[UIScrollView alloc] init];
+    mScrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	mScrollView.backgroundColor = [UIColor colorWithRed: 0.75 green: 0.2 blue: 0 alpha: 1.0];
 	mScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
 	mScrollView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 5, 5, 5);
 	mScrollView.contentInset = UIEdgeInsetsMake(6, 6, 6, 6);
     mScrollView.layer.cornerRadius = 5.0;
-	mScrollView.frame = CGRectMake(20,20, self.view.frameWidth - 40, mDropTarget.centerY - 70);
+	mScrollView.frame = CGRectMake(20,20, self.view.frame.size.width - 40, mDropTarget.center.y - 70);
     mScrollView.userInteractionEnabled = NO;
 	mScrollView.canCancelContentTouches = NO;
     
