@@ -18,6 +18,10 @@ Initalize the DroppableView like in th following example:
 and add it as a subview to your `UIScrollView`.  
 **Note**: Your `UIScrollView` needs to set `canCancelContentTouches = NO;`.
 
-### Screenshot der Beispiel App:
+### Screenshot of the example app:
 
+The black cards can be dragged from the red scrollView onto the green circle.  
+Try it!
+
+  
 ![Screenshot](http://www.bilderload.com/bild/189325/droppableviewIRGWX.png)
