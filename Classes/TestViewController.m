@@ -158,8 +158,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	CGSize size = CGSizeMake(((contentWidth-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_HORICONTALLY-1))/sCOUNT_OF_VIEWS_HORICONTALLY),
                              floor((contentHeight-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_VERTICALLY-1))/sCOUNT_OF_VIEWS_VERTICALLY));
 	
-    JDDroppableView * dropview = [[JDDroppableView alloc] initWithScrollView: mScrollView
-                                                           andDropTarget: mDropTarget];
+    JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: mDropTarget];
     dropview.backgroundColor = [UIColor blackColor];
     dropview.layer.cornerRadius = 3.0;
     dropview.frame = CGRectMake(mLastPosition.x, mLastPosition.y, size.width, size.height);

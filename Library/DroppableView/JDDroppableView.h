@@ -12,6 +12,7 @@
 @protocol JDDroppableViewDelegate <NSObject>
 @optional
 - (void) droppableViewBeganDragging: (JDDroppableView*) view;
+- (void) droppableViewDidMove: (JDDroppableView*) view;
 - (void) droppableView: (JDDroppableView*) view enteredTarget: (UIView*) target;
 - (void) droppableView: (JDDroppableView*) view leftTarget: (UIView*) target;
 - (BOOL) shouldAnimateDroppableViewBack: (JDDroppableView*) view wasDroppedOnTarget: (UIView*) target;
@@ -22,17 +23,18 @@
 @interface JDDroppableView : UIView
 {	
 	UIView * mDropTarget;
+    
 	UIView * mOuterView;
 	UIScrollView * mScrollView;
 	
+    BOOL mIsDragging;
     BOOL mIsOverTarget;
 	CGPoint mOriginalPosition;
-    
-    id<JDDroppableViewDelegate> mDelegate;
 }
 
 @property (nonatomic, assign) id<JDDroppableViewDelegate> delegate;
 
-- (id) initWithScrollView: (UIScrollView *) aScrollView andDropTarget: (UIView *) target;
+- (id) initWithFrame:(CGRect)frame;
+- (id) initWithDropTarget:(UIView*)target;
 
 @end
