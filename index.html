@@ -33,7 +33,7 @@
         <section id="main_content">
           <h2>DroppableView</h2>
 
-<p>A <code>DroppableView</code> represents a single draggable View. You may use it as a base class for the views, that you need to be draggable in your project. Currently it is built, to be used within a scrollView. But this could easily be changed.</p>
+<p>A <code>DroppableView</code> represents a single draggable View. You may use it as a base class for any view, that you need to be draggable in your project. You can even use it to drag something out of a scrollview, as you can seen in the example project.</p>
 
 <p>The demo app demonstrates, how the <code>DroppableView</code> may be used in a project.
 The <code>DroppableView</code> is used as a subview of a <code>UIScrollView</code> and can be dragged within and also out of the scrollview.</p>
@@ -42,14 +42,12 @@ The <code>DroppableView</code> is used as a subview of a <code>UIScrollView</cod
 
 <p>Initalize the DroppableView like in th following example:  </p>
 
+<p><code>- (id) initWithDropTarget: (UIView *) target;</code></p>
+
 <ul>
 <li>
-<code>aScrollView</code> is the parent scrollView</li>
-<li>
-<code>target</code> is a view outside of the scrollview, to where the element should be dragged.</li>
-</ul><p><code>- (id) initWithScrollView: (UIScrollView *) aScrollView andDropTarget: (UIView *) target;</code></p>
-
-<p>and add it as a subview to your <code>UIScrollView</code>.<br><strong>Note</strong>: Your <code>UIScrollView</code> needs to set <code>canCancelContentTouches = NO;</code>.</p>
+<code>target</code> is a view (outside of the scrollview), to where the element should be dragged.</li>
+</ul><p>If tou do use a DroppableView within a <code>UIScrollView</code>, you need to set <code>canCancelContentTouches = NO;</code> on the scrollView.</p>
 
 <h3>Screenshot of the example app:</h3>
 
