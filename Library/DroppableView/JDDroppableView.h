@@ -21,18 +21,17 @@
 
 
 @interface JDDroppableView : UIView
-{	
-	UIView * mDropTarget;
-    
+{	    
 	UIView * mOuterView;
 	UIScrollView * mScrollView;
 	
     BOOL mIsDragging;
     BOOL mIsOverTarget;
-	CGPoint mOriginalPosition;
 }
 
 @property (nonatomic, assign) id<JDDroppableViewDelegate> delegate;
+@property (nonatomic, retain) UIView * dropTarget;
+@property (nonatomic, assign) CGPoint originalPosition;
 
 - (id) initWithFrame:(CGRect)frame;
 - (id) initWithDropTarget:(UIView*)target;
