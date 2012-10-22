@@ -23,6 +23,8 @@
 @implementation JDDroppableView
 
 @synthesize delegate = _delegate;
+@synthesize dropTarget = _dropTarget;
+@synthesize originalPosition;
 
 - (id)init
 {
@@ -43,7 +45,7 @@
 {
 	self = [self init];
 	if (self != nil) {
-		mDropTarget = target;
+		self.dropTarget = target;
 	}
 	return self;
 }
@@ -74,6 +76,15 @@
 	[self endDrag];
 }
 
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    // First move
+    if (CGPointEqualToPoint(self.originalPosition, CGPointZero)) {
+        self.originalPosition = self.center;
+    }
+}
+
 #pragma mark dragging logic
 
 - (void) beginDrag
@@ -83,8 +94,6 @@
     if ([_delegate respondsToSelector: @selector(droppableViewBeganDragging:)]) {
         [_delegate droppableViewBeganDragging: self];
     };
-	
-	mOriginalPosition = self.center;
 	
 	[self changeSuperView];
 }
@@ -100,8 +109,8 @@
         [_delegate droppableViewDidMove:self];
     }
 	
-    if (mDropTarget) {
-        CGRect intersect = CGRectIntersection(self.frame, mDropTarget.frame);
+    if (self.dropTarget) {
+        CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
         if (intersect.size.width > 10 || intersect.size.height > 10)
         {
             if (!mIsOverTarget)
@@ -109,7 +118,7 @@
                 mIsOverTarget = YES;
                 
                 if ([_delegate respondsToSelector: @selector(droppableView:enteredTarget:)]) {
-                    [_delegate droppableView: self enteredTarget: mDropTarget];
+                    [_delegate droppableView: self enteredTarget: self.dropTarget];
                 }
             }
         }
@@ -118,7 +127,7 @@
             mIsOverTarget = NO;
             
             if ([_delegate respondsToSelector: @selector(droppableView:leftTarget:)]) {
-                [_delegate droppableView: self leftTarget: mDropTarget];
+                [_delegate droppableView: self leftTarget: self.dropTarget];
             }
         }
     }
@@ -133,8 +142,8 @@
         [_delegate droppableViewEndedDragging: self];
     }
 	
-    if (mDropTarget) {
-        CGRect intersect = CGRectIntersection(self.frame, mDropTarget.frame);
+    if (self.dropTarget) {
+        CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
         if (intersect.size.width > 10 || intersect.size.height > 10) {
             
             if([self handleDroppedView]) {
@@ -148,14 +157,14 @@
     mIsDragging = NO; // this needs to be after superview change
 	
 	[UIView beginAnimations: @"drag" context: nil];
-	self.center = mOriginalPosition;
+	self.center = self.originalPosition;
 	[UIView commitAnimations];
 }
 
 - (BOOL) handleDroppedView
 {
-    if (mDropTarget && [_delegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
-        return ![_delegate shouldAnimateDroppableViewBack: self wasDroppedOnTarget: mDropTarget];
+    if (self.dropTarget && [_delegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
+        return ![_delegate shouldAnimateDroppableViewBack: self wasDroppedOnTarget: self.dropTarget];
     }
     
     return NO;
