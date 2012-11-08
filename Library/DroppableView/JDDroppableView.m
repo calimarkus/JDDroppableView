@@ -12,18 +12,20 @@
 #define DROPPABLEVIEW_ANIMATION_DURATION 0.33
 
 @interface JDDroppableView ()
+@property (nonatomic, strong) NSMutableArray *dropTargets;
+@property (nonatomic, weak) UIView *activeDropTarget;
 @property (nonatomic, weak) UIView *outerView;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, assign) BOOL isDragging;
 @property (nonatomic, assign) BOOL didInitalizeReturnPosition;
 
-@property (nonatomic, assign) UIView *activeDropTarget;
+- (void)commonInit;
 
-- (void) beginDrag;
-- (void) dragAtPosition: (UITouch *) touch;
-- (void) endDrag;
+- (void)beginDrag;
+- (void)dragAtPosition:(UITouch*)touch;
+- (void)endDrag;
 
-- (void) changeSuperView;
+- (void)changeSuperView;
 @end
 
 
@@ -34,8 +36,8 @@
 {
 	self = [super init];
 	if (self != nil) {
-		self.dropTarget = target;
-        self.shouldUpdateReturnPosition = YES;
+        [self commonInit];
+        [self addDropTarget:target];
 	}
 	return self;
 }
@@ -43,39 +45,66 @@
 - (void)awakeFromNib;
 {
     [super awakeFromNib];
+    [self commonInit];
+}
+
+- (void)commonInit;
+{
+    self.dropTargets = [NSMutableArray array];
     self.shouldUpdateReturnPosition = YES;
 }
 
 #pragma mark UIResponder (touch handling)
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesBegan:touches withEvent:event];
 	[self beginDrag];
 	[self dragAtPosition: [touches anyObject]];
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesMoved:touches withEvent:event];
     [self dragAtPosition: [touches anyObject]];
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesEnded:touches withEvent:event];
 	[self endDrag];
 }
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesCancelled:touches withEvent:event];
 	[self endDrag];
 }
 
+#pragma mark target managment
+
+- (void)addDropTarget:(UIView*)target;
+{
+    if ([target isKindOfClass:[UIView class]]) {
+        [self.dropTargets addObject:target];
+    }
+}
+
+- (void)removeDropTarget:(UIView*)target;
+{
+    [self.dropTargets removeObject:target];
+}
+
+- (void)replaceDropTargets:(NSArray*)targets;
+{
+    self.dropTargets = [[targets filteredArrayUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        return [evaluatedObject isKindOfClass:[UIView class]];
+    }]] mutableCopy];
+}
+
 #pragma mark dragging logic
 
-- (void) beginDrag
+- (void)beginDrag;
 {
     // remember state
     self.isDragging = YES;
@@ -96,7 +125,7 @@
 }
 
 
-- (void) dragAtPosition: (UITouch *) touch
+- (void)dragAtPosition:(UITouch*)touch;
 {
     // animate into new position
 	[UIView animateWithDuration:DROPPABLEVIEW_ANIMATION_DURATION animations:^{
@@ -109,33 +138,46 @@
     }
 	
     // check target contact
-    if (self.dropTarget) {
-        CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
-        BOOL didHitTarget = intersect.size.width > 10 || intersect.size.height > 10;
-        
-        // target was hit
-        if (didHitTarget) {
-            if (self.activeDropTarget != self.dropTarget)
-            {
-                self.activeDropTarget = self.dropTarget;
-                
-                // inform delegate
-                if ([self.delegate respondsToSelector:@selector(droppableView:enteredTarget:)]) {
-                    [self.delegate droppableView:self enteredTarget:self.activeDropTarget];
-                }
-            }
+    if (self.dropTargets.count > 0) {
+        for (UIView *dropTarget in self.dropTargets) {
+            CGRect intersect = CGRectIntersection(self.frame, dropTarget.frame);
+            BOOL didHitTarget = intersect.size.width > 10 || intersect.size.height > 10;
             
-        // currently not over any target
-        } else {
-            if (self.activeDropTarget != nil)
-            {
-                // inform delegate
-                if ([self.delegate respondsToSelector:@selector(droppableView:leftTarget:)]) {
-                    [self.delegate droppableView:self leftTarget:self.activeDropTarget];
+            // target was hit
+            if (didHitTarget) {
+                if (self.activeDropTarget != dropTarget)
+                {
+                    // inform delegate about leaving old target
+                    if (self.activeDropTarget != nil) {
+                        // inform delegate
+                        if ([self.delegate respondsToSelector:@selector(droppableView:leftTarget:)]) {
+                            [self.delegate droppableView:self leftTarget:self.activeDropTarget];
+                        }
+                    }
+                    
+                    // set new active target
+                    self.activeDropTarget = dropTarget;
+                    
+                    // inform delegate about new target hit
+                    if ([self.delegate respondsToSelector:@selector(droppableView:enteredTarget:)]) {
+                        [self.delegate droppableView:self enteredTarget:self.activeDropTarget];
+                    }
+                    return;
                 }
                 
-                // reset active target
-                self.activeDropTarget = nil;
+                // currently not over any target
+            } else {
+                if (self.activeDropTarget == dropTarget)
+                {
+                    // inform delegate
+                    if ([self.delegate respondsToSelector:@selector(droppableView:leftTarget:)]) {
+                        [self.delegate droppableView:self leftTarget:self.activeDropTarget];
+                    }
+                    
+                    // reset active target
+                    self.activeDropTarget = nil;
+                    return;
+                }
             }
         }
     }
@@ -145,13 +187,13 @@
 - (void) endDrag
 {
     // inform delegate
-    if([self.delegate respondsToSelector: @selector(droppableViewEndedDragging:)]) {
-        [self.delegate droppableViewEndedDragging: self];
+    if([self.delegate respondsToSelector: @selector(droppableViewEndedDragging:onTarget:)]) {
+        [self.delegate droppableViewEndedDragging: self onTarget:self.activeDropTarget];
     }
 	
     // check target drop
     BOOL shouldAnimateBack = YES;
-    if (self.dropTarget && self.activeDropTarget != nil) {
+    if (self.activeDropTarget != nil) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
             shouldAnimateBack = [self.delegate shouldAnimateDroppableViewBack:self wasDroppedOnTarget:self.activeDropTarget];
         }

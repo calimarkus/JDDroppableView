@@ -15,11 +15,12 @@
 // setup view vars
 static NSInteger sDROPVIEW_MARGIN = 3;
 static CGFloat   sCOUNT_OF_VIEWS_HORICONTALLY = 4.0;
-static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 
+@interface TestViewController ()
+@property (nonatomic,assign) CGSize cardSize;
+@end
 
 @implementation TestViewController
-
 
 - (void)loadView
 {
@@ -29,7 +30,6 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     // increase viewcount on ipad
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         sCOUNT_OF_VIEWS_HORICONTALLY = 6;
-        sCOUNT_OF_VIEWS_VERTICALLY   = 4.3;
     }
     
     // add button
@@ -47,14 +47,23 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
                               32); // height
     [self.view addSubview: button];
 	
-	// drop target
-	self.dropTarget = [[UIView alloc] init];
-    self.dropTarget.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-	self.dropTarget.backgroundColor = [UIColor orangeColor];
-	self.dropTarget.frame = CGRectMake(0, 0, 30, 30);
-	self.dropTarget.center = CGPointMake(self.view.frame.size.width/2, button.frame.origin.y - 50);
-    self.dropTarget.layer.cornerRadius = 15;
-	[self.view addSubview: self.dropTarget];
+	// drop target 1
+	self.dropTarget1 = [[UIView alloc] init];
+    self.dropTarget1.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+	self.dropTarget1.backgroundColor = [UIColor orangeColor];
+	self.dropTarget1.frame = CGRectMake(0, 0, 30, 30);
+	self.dropTarget1.center = CGPointMake(self.view.frame.size.width/2 - 50, button.frame.origin.y - 50);
+    self.dropTarget1.layer.cornerRadius = 15;
+	[self.view addSubview: self.dropTarget1];
+	
+	// drop target 2
+	self.dropTarget2 = [[UIView alloc] init];
+    self.dropTarget2.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+	self.dropTarget2.backgroundColor = [UIColor orangeColor];
+	self.dropTarget2.frame = CGRectMake(0, 0, 30, 30);
+	self.dropTarget2.center = CGPointMake(self.view.frame.size.width/2 + 50, button.frame.origin.y - 50);
+    self.dropTarget2.layer.cornerRadius = 15;
+	[self.view addSubview: self.dropTarget2];
 	
 	// scrollview
 	self.scrollView = [[UIScrollView alloc] init];
@@ -64,14 +73,19 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	self.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 5, 5, 5);
 	self.scrollView.contentInset = UIEdgeInsetsMake(6, 6, 6, 6);
     self.scrollView.layer.cornerRadius = 5.0;
-	self.scrollView.frame = CGRectMake(20,20, self.view.frame.size.width - 40, self.dropTarget.center.y - 70);
+	self.scrollView.frame = CGRectMake(20,20, self.view.frame.size.width - 40, self.dropTarget1.center.y - 70);
     self.scrollView.userInteractionEnabled = NO;
 	self.scrollView.canCancelContentTouches = NO;
-    
 	[self.view addSubview: self.scrollView];
+    
+    // calculate card size
+    CGFloat contentWidth  = self.scrollView.frame.size.width  - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
+    CGFloat width = ((contentWidth-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_HORICONTALLY-1))/sCOUNT_OF_VIEWS_HORICONTALLY);
+	self.cardSize = CGSizeMake(width,floor(width/10*18));
 	
 	// animate some draggable views in
-    int numberOfViews            = sCOUNT_OF_VIEWS_HORICONTALLY*floor(sCOUNT_OF_VIEWS_VERTICALLY) + 2;
+    NSInteger rowCount = ceil(self.scrollView.frame.size.height/self.cardSize.height);
+    NSInteger numberOfViews = sCOUNT_OF_VIEWS_HORICONTALLY * rowCount - 2;
     CGFloat animationTimePerView = 0.15;
 	for (int i = 0; i < numberOfViews; i++) {
 		[self performSelector: @selector(addView:) withObject: nil afterDelay: i*animationTimePerView];
@@ -151,15 +165,11 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 
 - (void)addView:(id)sender
 {
-    CGFloat contentWidth  = self.scrollView.frame.size.width  - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
-    CGFloat contentHeight = self.scrollView.frame.size.height - self.scrollView.contentInset.top;
-	CGSize size = CGSizeMake(((contentWidth-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_HORICONTALLY-1))/sCOUNT_OF_VIEWS_HORICONTALLY),
-                             floor((contentHeight-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_VERTICALLY-1))/sCOUNT_OF_VIEWS_VERTICALLY));
-	
-    JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: self.dropTarget];
+    JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: self.dropTarget1];
+    [dropview addDropTarget:self.dropTarget2];
     dropview.backgroundColor = [UIColor blackColor];
     dropview.layer.cornerRadius = 3.0;
-    dropview.frame = CGRectMake(self.lastPosition.x, self.lastPosition.y, size.width, size.height);
+    dropview.frame = CGRectMake(self.lastPosition.x, self.lastPosition.y, self.cardSize.width, self.cardSize.height);
     dropview.delegate = self;
     
     [self.scrollView addSubview: dropview];
@@ -204,27 +214,36 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 //    NSLog(@"droppableViewDidMove:");
 }
 
-- (void)droppableViewEndedDragging:(JDDroppableView*)view
+- (void)droppableViewEndedDragging:(JDDroppableView*)view onTarget:(UIView *)target
 {
-//    NSLog(@"droppableViewEndedDragging:");
+//    NSLog(@"droppableViewEndedDragging:onTarget: %@", target == nil ? @"no target" : @"on target");
     
 	[UIView animateWithDuration:0.33 animations:^{
-        view.backgroundColor = [UIColor blackColor];
+        if (!target) {
+            view.backgroundColor = [UIColor blackColor];
+        } else {
+            view.backgroundColor = [UIColor darkGrayColor];
+        }
         view.alpha = 1.0;
     }];
 }
 
 - (void)droppableView:(JDDroppableView*)view enteredTarget:(UIView*)target
 {
-//    NSLog(@"droppableView:enteredTarget:");
+//    NSLog(@"droppableView:enteredTarget: %@", target == self.dropTarget1 ? @"one" : @"two");
     
     target.transform = CGAffineTransformMakeScale(1.5, 1.5);
-    target.backgroundColor = [UIColor greenColor];
+    
+    if (target == self.dropTarget1) {
+        target.backgroundColor = [UIColor greenColor];
+    } else {
+        target.backgroundColor = [UIColor redColor];
+    }
 }
 
 - (void)droppableView:(JDDroppableView*)view leftTarget:(UIView*)target
 {
-//    NSLog(@"droppableView:leftTarget:");
+//    NSLog(@"droppableView:leftTarget: %@", target == self.dropTarget1 ? @"one" : @"two");
     
     target.transform = CGAffineTransformMakeScale(1.0, 1.0);
     target.backgroundColor = [UIColor orangeColor];
@@ -232,25 +251,24 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 
 - (BOOL)shouldAnimateDroppableViewBack:(JDDroppableView*)view wasDroppedOnTarget:(UIView*)target
 {
-//    NSLog(@"shouldAnimateDroppableViewBack:wasDroppedOnTarget:");
+//    NSLog(@"shouldAnimateDroppableViewBack:wasDroppedOnTarget: %@", target == self.dropTarget1 ? @"one" : @"two");
     
 	[self droppableView:view leftTarget:target];
     
-    CGRect frame = view.frame;
-    frame.size.width *= 0.3;
-    frame.size.height *= 0.3;
-    frame.origin.x += (view.frame.size.width-frame.size.width)/2;
-    frame.origin.y += (view.frame.size.height-frame.size.height)/2;
+    if (target == self.dropTarget1) {
+        return YES;
+    }
     
-    [UIView beginAnimations: @"drag" context: nil];
-    [UIView setAnimationDelegate: view];
-    [UIView setAnimationDidStopSelector: @selector(removeFromSuperview)];
+    // animate out and remove view
+    [UIView animateWithDuration:0.33 animations:^{
+        view.transform = CGAffineTransformMakeScale(0.2, 0.2);
+        view.alpha = 0.2;
+        view.center = target.center;
+    } completion:^(BOOL finished) {
+        [view removeFromSuperview];
+    }];
     
-    view.frame = frame;
-    view.center = target.center;
-    
-    [UIView commitAnimations];
-    
+    // update layout
     [self relayout];
     [self.scrollView flashScrollIndicators];
     
