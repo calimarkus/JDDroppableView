@@ -9,16 +9,14 @@
 #import "JDDroppableView.h"
 
 @interface TestViewController : UIViewController <JDDroppableViewDelegate>
-{
-    UIScrollView* mScrollView;
-    UIView* mDropTarget;
-    
-    CGPoint mLastPosition;
-}
 
-- (void) relayout;
-- (void) addView: (id) sender;
-- (void) scrollToBottomAnimated: (BOOL) animated;
+@property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *dropTarget;
+@property (nonatomic, assign) CGPoint lastPosition;
+
+- (void)relayout;
+- (void)addView:(id)sender;
+- (void)scrollToBottomAnimated:(BOOL)animated;
 
 @end
 

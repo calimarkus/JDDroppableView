@@ -12,23 +12,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    mWindow = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
-    mWindow.backgroundColor = [UIColor whiteColor];
+    self.window = [[UIWindow alloc] initWithFrame: [[UIScreen mainScreen] bounds]];
     
+    // setup controller
     TestViewController* viewController = [[TestViewController alloc] init];
-    [mWindow addSubview: viewController.view];
-    
-    [mWindow makeKeyAndVisible];
+    self.window.rootViewController = viewController;
+    [self.window makeKeyAndVisible];
     
     return YES;
-}
-
-- (void)dealloc
-{
-    [mWindow release];
-    [mViewController release];
-    
-    [super dealloc];
 }
 
 @end

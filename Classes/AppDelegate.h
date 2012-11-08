@@ -10,9 +10,8 @@
 #import "TestViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
-{
-    UIWindow* mWindow;
-    TestViewController* mViewController;
-}
+
+@property (nonatomic,strong) UIWindow *window;
+@property (nonatomic,strong) TestViewController *viewController;
 
 @end

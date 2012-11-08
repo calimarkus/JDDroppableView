@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D2652E99164C0DB000C49837 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2652E98164C0DB000C49837 /* Default-568h@2x.png */; };
 		D272CB0D151FA4EF006F8770 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D272CB0B151FA4EF006F8770 /* icon.png */; };
 		D272CB0E151FA4EF006F8770 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D272CB0C151FA4EF006F8770 /* icon@2x.png */; };
 		D286AD5C151F966E00110CE1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D286AD5B151F966E00110CE1 /* UIKit.framework */; };
@@ -22,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D2652E98164C0DB000C49837 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		D272CB0B151FA4EF006F8770 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		D272CB0C151FA4EF006F8770 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
 		D286AD57151F966E00110CE1 /* DroppableViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DroppableViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +72,7 @@
 			children = (
 				D2F52C2F151FA85F004241E6 /* Default.png */,
 				D2F52C30151FA85F004241E6 /* Default@2x.png */,
+				D2652E98164C0DB000C49837 /* Default-568h@2x.png */,
 				D272CB0B151FA4EF006F8770 /* icon.png */,
 				D272CB0C151FA4EF006F8770 /* icon@2x.png */,
 			);
@@ -199,6 +202,7 @@
 				D272CB0E151FA4EF006F8770 /* icon@2x.png in Resources */,
 				D2F52C31151FA85F004241E6 /* Default.png in Resources */,
 				D2F52C32151FA85F004241E6 /* Default@2x.png in Resources */,
+				D2652E99164C0DB000C49837 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,25 +227,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					armv7,
-				);
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_THUMB_SUPPORT = NO;
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -250,10 +244,11 @@
 		D286AD70151F966E00110CE1 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SupportingFiles/Prefix.pch;
-				GCC_THUMB_SUPPORT = NO;
 				INFOPLIST_FILE = SupportingFiles/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

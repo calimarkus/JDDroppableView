@@ -48,29 +48,27 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     [self.view addSubview: button];
 	
 	// drop target
-	mDropTarget = [[UIView alloc] init];
-    mDropTarget.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
-	mDropTarget.backgroundColor = [UIColor orangeColor];
-	mDropTarget.frame = CGRectMake(0, 0, 30, 30);
-	mDropTarget.center = CGPointMake(self.view.frame.size.width/2, button.frame.origin.y - 50);
-    mDropTarget.layer.cornerRadius = 15;
-	[self.view addSubview: mDropTarget];
-    [mDropTarget release];
+	self.dropTarget = [[UIView alloc] init];
+    self.dropTarget.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+	self.dropTarget.backgroundColor = [UIColor orangeColor];
+	self.dropTarget.frame = CGRectMake(0, 0, 30, 30);
+	self.dropTarget.center = CGPointMake(self.view.frame.size.width/2, button.frame.origin.y - 50);
+    self.dropTarget.layer.cornerRadius = 15;
+	[self.view addSubview: self.dropTarget];
 	
 	// scrollview
-	mScrollView = [[UIScrollView alloc] init];
-    mScrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-	mScrollView.backgroundColor = [UIColor colorWithRed: 0.75 green: 0.2 blue: 0 alpha: 1.0];
-	mScrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-	mScrollView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 5, 5, 5);
-	mScrollView.contentInset = UIEdgeInsetsMake(6, 6, 6, 6);
-    mScrollView.layer.cornerRadius = 5.0;
-	mScrollView.frame = CGRectMake(20,20, self.view.frame.size.width - 40, mDropTarget.center.y - 70);
-    mScrollView.userInteractionEnabled = NO;
-	mScrollView.canCancelContentTouches = NO;
+	self.scrollView = [[UIScrollView alloc] init];
+    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	self.scrollView.backgroundColor = [UIColor colorWithRed: 0.75 green: 0.2 blue: 0 alpha: 1.0];
+	self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
+	self.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 5, 5, 5);
+	self.scrollView.contentInset = UIEdgeInsetsMake(6, 6, 6, 6);
+    self.scrollView.layer.cornerRadius = 5.0;
+	self.scrollView.frame = CGRectMake(20,20, self.view.frame.size.width - 40, self.dropTarget.center.y - 70);
+    self.scrollView.userInteractionEnabled = NO;
+	self.scrollView.canCancelContentTouches = NO;
     
-	[self.view addSubview: mScrollView];
-    [mScrollView release];
+	[self.view addSubview: self.scrollView];
 	
 	// animate some draggable views in
     int numberOfViews            = sCOUNT_OF_VIEWS_HORICONTALLY*floor(sCOUNT_OF_VIEWS_VERTICALLY) + 2;
@@ -83,16 +81,16 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	}
     
     // reenable userinteraction after animation ended
-    [mScrollView performSelector: @selector(setUserInteractionEnabled:) withObject: [NSNumber numberWithBool: YES] afterDelay: numberOfViews*animationTimePerView];
+    [self.scrollView performSelector: @selector(setUserInteractionEnabled:) withObject: [NSNumber numberWithBool: YES] afterDelay: numberOfViews*animationTimePerView];
 }
 
 #pragma layout
 
-- (void) relayout
+- (void)relayout
 {
     // cancel all animations
-    [mScrollView.layer removeAllAnimations];
-	for (UIView* subview in mScrollView.subviews)
+    [self.scrollView.layer removeAllAnimations];
+	for (UIView* subview in self.scrollView.subviews)
         [subview.layer removeAllAnimations];
     
     // setup new animation
@@ -102,11 +100,11 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
 	float posx = 0;
 	float posy = 0;
 	CGRect frame = CGRectZero;
-    mLastPosition = CGPointMake(0, -100);
-    CGFloat contentWidth = mScrollView.contentSize.width - mScrollView.contentInset.left - mScrollView.contentInset.right;
+    self.lastPosition = CGPointMake(0, -100);
+    CGFloat contentWidth = self.scrollView.contentSize.width - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
 	
     // iterate through all subviews
-	for (UIView* subview in mScrollView.subviews)
+	for (UIView* subview in self.scrollView.subviews)
     {
         // ignore scroll indicators
         if (!subview.userInteractionEnabled) {
@@ -125,13 +123,13 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
         }
         
         // save last position
-        mLastPosition = CGPointMake(posx, posy);
+        self.lastPosition = CGPointMake(posx, posy);
 		
         // add size and margin
 		posx += frame.size.width + sDROPVIEW_MARGIN;
 		
         // goto next row if needed
-		if (posx > mScrollView.frame.size.width - mScrollView.contentInset.left - mScrollView.contentInset.right)
+		if (posx > self.scrollView.frame.size.width - self.scrollView.contentInset.left - self.scrollView.contentInset.right)
         {
 			posx = 0;
 			posy += frame.size.height + sDROPVIEW_MARGIN;
@@ -146,26 +144,25 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     }
     
     // update content size
-    mScrollView.contentSize = CGSizeMake(contentWidth, posy);
+    self.scrollView.contentSize = CGSizeMake(contentWidth, posy);
     
 	[UIView commitAnimations];
 }
 
-- (void) addView: (id) sender
+- (void)addView:(id)sender
 {
-    CGFloat contentWidth  = mScrollView.frame.size.width  - mScrollView.contentInset.left - mScrollView.contentInset.right;
-    CGFloat contentHeight = mScrollView.frame.size.height - mScrollView.contentInset.top;
+    CGFloat contentWidth  = self.scrollView.frame.size.width  - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
+    CGFloat contentHeight = self.scrollView.frame.size.height - self.scrollView.contentInset.top;
 	CGSize size = CGSizeMake(((contentWidth-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_HORICONTALLY-1))/sCOUNT_OF_VIEWS_HORICONTALLY),
                              floor((contentHeight-sDROPVIEW_MARGIN*(sCOUNT_OF_VIEWS_VERTICALLY-1))/sCOUNT_OF_VIEWS_VERTICALLY));
 	
-    JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: mDropTarget];
+    JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: self.dropTarget];
     dropview.backgroundColor = [UIColor blackColor];
     dropview.layer.cornerRadius = 3.0;
-    dropview.frame = CGRectMake(mLastPosition.x, mLastPosition.y, size.width, size.height);
+    dropview.frame = CGRectMake(self.lastPosition.x, self.lastPosition.y, size.width, size.height);
     dropview.delegate = self;
     
-    [mScrollView addSubview: dropview];
-    [dropview release];
+    [self.scrollView addSubview: dropview];
     
     [self relayout];
     
@@ -175,17 +172,17 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     }
 }
 
-- (void) scrollToBottomAnimated: (BOOL) animated
+- (void)scrollToBottomAnimated:(BOOL)animated
 {
-    [mScrollView.layer removeAllAnimations];
+    [self.scrollView.layer removeAllAnimations];
     
-    CGFloat bottomScrollPosition = mScrollView.contentSize.height;
-    bottomScrollPosition -= mScrollView.frame.size.height;
-    bottomScrollPosition += mScrollView.contentInset.top;
-    bottomScrollPosition = MAX(-mScrollView.contentInset.top,bottomScrollPosition);
-    CGPoint newOffset = CGPointMake(-mScrollView.contentInset.left, bottomScrollPosition);
-    if (newOffset.y != mScrollView.contentOffset.y) {
-        [mScrollView setContentOffset: newOffset animated: animated];
+    CGFloat bottomScrollPosition = self.scrollView.contentSize.height;
+    bottomScrollPosition -= self.scrollView.frame.size.height;
+    bottomScrollPosition += self.scrollView.contentInset.top;
+    bottomScrollPosition = MAX(-self.scrollView.contentInset.top,bottomScrollPosition);
+    CGPoint newOffset = CGPointMake(-self.scrollView.contentInset.left, bottomScrollPosition);
+    if (newOffset.y != self.scrollView.contentOffset.y) {
+        [self.scrollView setContentOffset: newOffset animated: animated];
     }
 }
 
@@ -212,7 +209,7 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     [UIView commitAnimations];
     
     [self relayout];
-    [mScrollView flashScrollIndicators];
+    [self.scrollView flashScrollIndicators];
     
     return NO;
 }
