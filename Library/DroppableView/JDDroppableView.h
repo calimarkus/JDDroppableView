@@ -14,6 +14,9 @@
 @property (nonatomic, weak) UIView *dropTarget;
 @property (nonatomic, weak) id<JDDroppableViewDelegate> delegate;
 
+@property (nonatomic, assign) CGPoint returnPosition;
+@property (nonatomic, assign) BOOL shouldUpdateReturnPosition;
+
 - (id)initWithDropTarget:(UIView*)target;
 
 @end

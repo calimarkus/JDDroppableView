@@ -9,19 +9,20 @@
 #import "JDDroppableView.h"
 
 
+#define DROPPABLEVIEW_ANIMATION_DURATION 0.33
+
 @interface JDDroppableView ()
 @property (nonatomic, weak) UIView *outerView;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, assign) BOOL isDragging;
 @property (nonatomic, assign) BOOL isOverTarget;
-@property (nonatomic, assign) CGPoint originalPosition;
+@property (nonatomic, assign) BOOL didInitalizeReturnPosition;
 
 - (void) beginDrag;
 - (void) dragAtPosition: (UITouch *) touch;
 - (void) endDrag;
 
 - (void) changeSuperView;
-- (BOOL) handleDroppedView;
 @end
 
 
@@ -33,8 +34,15 @@
 	self = [super init];
 	if (self != nil) {
 		self.dropTarget = target;
+        self.shouldUpdateReturnPosition = YES;
 	}
 	return self;
+}
+
+- (void)awakeFromNib;
+{
+    [super awakeFromNib];
+    self.shouldUpdateReturnPosition = YES;
 }
 
 #pragma mark UIResponder (touch handling)
@@ -68,28 +76,38 @@
 
 - (void) beginDrag
 {
+    // remember state
     self.isDragging = YES;
     
+    // inform delegate
     if ([self.delegate respondsToSelector: @selector(droppableViewBeganDragging:)]) {
         [self.delegate droppableViewBeganDragging: self];
     };
 	
-	self.originalPosition = self.center;
+    // update return position
+    if (!self.didInitalizeReturnPosition || self.shouldUpdateReturnPosition) {
+        self.returnPosition = self.center;
+        self.didInitalizeReturnPosition = YES;
+    }
 	
+    // swap out of scrollView if needed
 	[self changeSuperView];
 }
 
 
 - (void) dragAtPosition: (UITouch *) touch
 {
-	[UIView beginAnimations: @"drag" context: nil];
-	self.center = [touch locationInView: self.superview];
-	[UIView commitAnimations];
+    // animate into new position
+	[UIView animateWithDuration:DROPPABLEVIEW_ANIMATION_DURATION animations:^{
+        self.center = [touch locationInView: self.superview];
+    }];
     
+    // inform delegate
     if ([self.delegate respondsToSelector: @selector(droppableViewDidMove:)]) {
         [self.delegate droppableViewDidMove:self];
     }
 	
+    // check target contact
     if (self.dropTarget) {
         CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
         if (intersect.size.width > 10 || intersect.size.height > 10)
@@ -98,6 +116,7 @@
             {
                 self.isOverTarget = YES;
                 
+                // inform delegate
                 if ([self.delegate respondsToSelector: @selector(droppableView:enteredTarget:)]) {
                     [self.delegate droppableView: self enteredTarget: self.dropTarget];
                 }
@@ -107,6 +126,7 @@
         {
             self.isOverTarget = NO;
             
+            // inform delegate
             if ([self.delegate respondsToSelector: @selector(droppableView:leftTarget:)]) {
                 [self.delegate droppableView: self leftTarget: self.dropTarget];
             }
@@ -117,38 +137,35 @@
 
 - (void) endDrag
 {
-    self.isOverTarget = NO;
-    
+    // inform delegate
     if([self.delegate respondsToSelector: @selector(droppableViewEndedDragging:)]) {
         [self.delegate droppableViewEndedDragging: self];
     }
 	
-    if (self.dropTarget) {
-        CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
-        if (intersect.size.width > 10 || intersect.size.height > 10) {
-            
-            if([self handleDroppedView]) {
-                self.isDragging = NO;
-                return;
-            }
+    // check target drop
+    BOOL shouldAnimateBack = YES;
+    if (self.dropTarget && self.isOverTarget) {
+        if (self.delegate && [self.delegate respondsToSelector:@selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
+            shouldAnimateBack = [self.delegate shouldAnimateDroppableViewBack:self wasDroppedOnTarget:self.dropTarget];
         }
     }
 
-	[self changeSuperView];
-    self.isDragging = NO; // this needs to be after superview change
-	
-	[UIView beginAnimations: @"drag" context: nil];
-	self.center = self.originalPosition;
-	[UIView commitAnimations];
-}
-
-- (BOOL) handleDroppedView
-{
-    if (self.dropTarget && [self.delegate respondsToSelector: @selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
-        return ![self.delegate shouldAnimateDroppableViewBack: self wasDroppedOnTarget: self.dropTarget];
+    // insert in scrollview again, if needed
+    if (shouldAnimateBack) {
+        [self changeSuperView];
     }
     
-    return NO;
+    // update state
+    // this needs to be after superview change
+    self.isDragging = NO;
+    self.isOverTarget = NO;
+	
+    // animate back to original position
+    if (shouldAnimateBack) {
+        [UIView animateWithDuration:DROPPABLEVIEW_ANIMATION_DURATION animations:^{
+            self.center = self.returnPosition;
+        }];
+    }
 }
 
 #pragma mark superview handling
@@ -180,11 +197,9 @@
 	CGPoint ctr = self.center;
 	
 	if (self.outerView == self.scrollView) {
-		
 		ctr.x += self.scrollView.frame.origin.x - self.scrollView.contentOffset.x;
 		ctr.y += self.scrollView.frame.origin.y - self.scrollView.contentOffset.y;
 	} else {
-		
 		ctr.x -= self.scrollView.frame.origin.x - self.scrollView.contentOffset.x;
 		ctr.y -= self.scrollView.frame.origin.y - self.scrollView.contentOffset.y;
 	}
