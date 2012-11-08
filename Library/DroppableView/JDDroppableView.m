@@ -10,7 +10,6 @@
 
 
 @interface JDDroppableView ()
-@property (nonatomic, weak) UIView *dropTarget;
 @property (nonatomic, weak) UIView *outerView;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, assign) BOOL isDragging;
@@ -29,24 +28,9 @@
 
 @implementation JDDroppableView
 
-- (id)init
+- (id)initWithDropTarget:(UIView*)target;
 {
-    return [self initWithFrame: [UIApplication sharedApplication].keyWindow.frame];
-}
-
-- (id)initWithFrame:(CGRect)frame
-{
-    self = [super initWithFrame:frame];
-    if (self) {
-        self.isDragging = NO;
-        self.isOverTarget = NO;
-    }
-    return self;
-}
-
-- (id) initWithDropTarget: (UIView *) target;
-{
-	self = [self init];
+	self = [super init];
 	if (self != nil) {
 		self.dropTarget = target;
 	}
