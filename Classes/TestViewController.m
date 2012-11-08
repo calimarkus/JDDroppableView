@@ -98,6 +98,11 @@ static CGFloat   sCOUNT_OF_VIEWS_HORICONTALLY = 4.0;
     [self.scrollView performSelector: @selector(setUserInteractionEnabled:) withObject: [NSNumber numberWithBool: YES] afterDelay: numberOfViews*animationTimePerView];
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation
+{
+    return UIInterfaceOrientationIsPortrait(toInterfaceOrientation);
+}
+
 #pragma layout
 
 - (void)relayout
