@@ -32,6 +32,15 @@
 
 @implementation JDDroppableView
 
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self commonInit];
+    }
+    return self;
+}
+
 - (id)initWithDropTarget:(UIView*)target;
 {
 	self = [super init];
@@ -50,7 +59,6 @@
 
 - (void)commonInit;
 {
-    self.dropTargets = [NSMutableArray array];
     self.shouldUpdateReturnPosition = YES;
 }
 
@@ -85,6 +93,12 @@
 
 - (void)addDropTarget:(UIView*)target;
 {
+    // lazy initialization
+    if (!self.dropTargets) {
+        self.dropTargets = [NSMutableArray array];
+    }
+    
+    // add target
     if ([target isKindOfClass:[UIView class]]) {
         [self.dropTargets addObject:target];
     }
