@@ -15,8 +15,9 @@
 @property (nonatomic, weak) UIView *outerView;
 @property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, assign) BOOL isDragging;
-@property (nonatomic, assign) BOOL isOverTarget;
 @property (nonatomic, assign) BOOL didInitalizeReturnPosition;
+
+@property (nonatomic, assign) UIView *activeDropTarget;
 
 - (void) beginDrag;
 - (void) dragAtPosition: (UITouch *) touch;
@@ -110,25 +111,31 @@
     // check target contact
     if (self.dropTarget) {
         CGRect intersect = CGRectIntersection(self.frame, self.dropTarget.frame);
-        if (intersect.size.width > 10 || intersect.size.height > 10)
-        {
-            if (!self.isOverTarget)
+        BOOL didHitTarget = intersect.size.width > 10 || intersect.size.height > 10;
+        
+        // target was hit
+        if (didHitTarget) {
+            if (self.activeDropTarget != self.dropTarget)
             {
-                self.isOverTarget = YES;
+                self.activeDropTarget = self.dropTarget;
                 
                 // inform delegate
-                if ([self.delegate respondsToSelector: @selector(droppableView:enteredTarget:)]) {
-                    [self.delegate droppableView: self enteredTarget: self.dropTarget];
+                if ([self.delegate respondsToSelector:@selector(droppableView:enteredTarget:)]) {
+                    [self.delegate droppableView:self enteredTarget:self.activeDropTarget];
                 }
             }
-        }
-        else if (self.isOverTarget)
-        {
-            self.isOverTarget = NO;
             
-            // inform delegate
-            if ([self.delegate respondsToSelector: @selector(droppableView:leftTarget:)]) {
-                [self.delegate droppableView: self leftTarget: self.dropTarget];
+        // currently not over any target
+        } else {
+            if (self.activeDropTarget != nil)
+            {
+                // inform delegate
+                if ([self.delegate respondsToSelector:@selector(droppableView:leftTarget:)]) {
+                    [self.delegate droppableView:self leftTarget:self.activeDropTarget];
+                }
+                
+                // reset active target
+                self.activeDropTarget = nil;
             }
         }
     }
@@ -144,9 +151,9 @@
 	
     // check target drop
     BOOL shouldAnimateBack = YES;
-    if (self.dropTarget && self.isOverTarget) {
+    if (self.dropTarget && self.activeDropTarget != nil) {
         if (self.delegate && [self.delegate respondsToSelector:@selector(shouldAnimateDroppableViewBack:wasDroppedOnTarget:)]) {
-            shouldAnimateBack = [self.delegate shouldAnimateDroppableViewBack:self wasDroppedOnTarget:self.dropTarget];
+            shouldAnimateBack = [self.delegate shouldAnimateDroppableViewBack:self wasDroppedOnTarget:self.activeDropTarget];
         }
     }
 
@@ -158,7 +165,7 @@
     // update state
     // this needs to be after superview change
     self.isDragging = NO;
-    self.isOverTarget = NO;
+    self.activeDropTarget = nil;
 	
     // animate back to original position
     if (shouldAnimateBack) {

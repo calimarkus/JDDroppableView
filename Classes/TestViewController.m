@@ -186,12 +186,55 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     }
 }
 
-#pragma -
-#pragma droppabe view delegate
 
-- (BOOL) shouldAnimateDroppableViewBack: (JDDroppableView *)view wasDroppedOnTarget: (UIView *)target
+#pragma JDDroppableViewDelegate
+
+- (void)droppableViewBeganDragging:(JDDroppableView*)view;
 {
-	[self droppableView: view leftTarget: target];
+//    NSLog(@"droppableViewBeganDragging");
+    
+	[UIView animateWithDuration:0.33 animations:^{
+        view.backgroundColor = [UIColor colorWithRed:1 green:0.5 blue:0 alpha:1];
+        view.alpha = 0.8;
+    }];
+}
+
+- (void)droppableViewDidMove:(JDDroppableView*)view;
+{
+//    NSLog(@"droppableViewDidMove:");
+}
+
+- (void)droppableViewEndedDragging:(JDDroppableView*)view
+{
+//    NSLog(@"droppableViewEndedDragging:");
+    
+	[UIView animateWithDuration:0.33 animations:^{
+        view.backgroundColor = [UIColor blackColor];
+        view.alpha = 1.0;
+    }];
+}
+
+- (void)droppableView:(JDDroppableView*)view enteredTarget:(UIView*)target
+{
+//    NSLog(@"droppableView:enteredTarget:");
+    
+    target.transform = CGAffineTransformMakeScale(1.5, 1.5);
+    target.backgroundColor = [UIColor greenColor];
+}
+
+- (void)droppableView:(JDDroppableView*)view leftTarget:(UIView*)target
+{
+//    NSLog(@"droppableView:leftTarget:");
+    
+    target.transform = CGAffineTransformMakeScale(1.0, 1.0);
+    target.backgroundColor = [UIColor orangeColor];
+}
+
+- (BOOL)shouldAnimateDroppableViewBack:(JDDroppableView*)view wasDroppedOnTarget:(UIView*)target
+{
+//    NSLog(@"shouldAnimateDroppableViewBack:wasDroppedOnTarget:");
+    
+	[self droppableView:view leftTarget:target];
     
     CGRect frame = view.frame;
     frame.size.width *= 0.3;
@@ -212,34 +255,6 @@ static CGFloat   sCOUNT_OF_VIEWS_VERTICALLY   = 2.7;
     [self.scrollView flashScrollIndicators];
     
     return NO;
-}
-
-- (void) droppableViewBeganDragging:(JDDroppableView *)view
-{
-	[UIView beginAnimations: @"drag" context: nil];
-	view.backgroundColor = [UIColor colorWithRed: 1 green: 0.5 blue: 0 alpha: 1];
-	view.alpha = 0.8;
-	[UIView commitAnimations];
-}
-
-- (void) droppableView:(JDDroppableView *)view enteredTarget:(UIView *)target
-{
-    target.transform = CGAffineTransformMakeScale(1.5, 1.5);
-    target.backgroundColor = [UIColor greenColor];
-}
-
-- (void) droppableView:(JDDroppableView *)view leftTarget:(UIView *)target
-{
-    target.transform = CGAffineTransformMakeScale(1.0, 1.0);
-    target.backgroundColor = [UIColor orangeColor];
-}
-
-- (void) droppableViewEndedDragging:(JDDroppableView *)view
-{
-	[UIView beginAnimations: @"drag" context: nil];
-	view.backgroundColor = [UIColor blackColor];
-	view.alpha = 1.0;
-	[UIView commitAnimations];
 }
 
 @end
