@@ -153,8 +153,11 @@
 	
     // check target contact
     if (self.dropTargets.count > 0) {
+        UIView *rootView = [UIApplication sharedApplication].keyWindow.rootViewController.view;
+        CGRect viewRectInWindow = [self convertRect:self.bounds toView:rootView];
         for (UIView *dropTarget in self.dropTargets) {
-            CGRect intersect = CGRectIntersection(self.frame, dropTarget.frame);
+            CGRect dropTargetRectInWindow = [dropTarget convertRect:dropTarget.bounds toView:rootView];
+            CGRect intersect = CGRectIntersection(viewRectInWindow, dropTargetRectInWindow);
             BOOL didHitTarget = intersect.size.width > 10 || intersect.size.height > 10;
             
             // target was hit
