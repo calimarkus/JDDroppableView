@@ -60,14 +60,14 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 {
     [super touchesBegan:touches withEvent:event];
 	[self beginDrag];
-    [self dragAtPosition:[touches anyObject]
+    [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
                 animated:YES];
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesMoved:touches withEvent:event];
-    [self dragAtPosition:[touches anyObject]
+    [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
                 animated:NO];
 }
 
@@ -133,13 +133,13 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 }
 
 
-- (void)dragAtPosition:(UITouch*)touch animated:(BOOL)animated;
+- (void)dragAtPosition:(CGPoint)point animated:(BOOL)animated;
 {
     if (!self.isDragging) return;
     
     // animate into new position
     [UIView animateWithDuration:animated?JDDroppableViewDefaultAnimationDuration:0.0 animations:^{
-        self.center = [touch locationInView: self.superview];
+        self.center = point;
     }];
     
     // inform delegate
