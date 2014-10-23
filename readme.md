@@ -6,12 +6,16 @@ A `DroppableView` represents a single draggable View. You may use it as a base c
 
 ### Usage
 
-Initalize the DroppableView like in th following example:  
+Just subclass from `JDDroppableView` and your ready to go. If you want to use specific drop-targets, you can use any of the following APIs to add them:
 
-`- (instancetype)initWithDropTarget:(UIView*)target;`
+    - (id)initWithDropTarget:(UIView*)target;
+    - (void)addDropTarget:(UIView*)target;
+    - (void)removeDropTarget:(UIView*)target;
+    - (void)replaceDropTargets:(NSArray*)targets;
 
-- `target` is a view (outside of the scrollview), to where the element should be dragged.
+- `target` is a view (outside of the scrollview), to where the element should be draggable
 
-If you use a DroppableView within a `UIScrollView`, you need to set `canCancelContentTouches = NO;` on the scrollView.
+**NOTE:** If you use a DroppableView within a `UIScrollView`, you need to set `canCancelContentTouches = NO;` on the scrollView.
 
- 
+
+
