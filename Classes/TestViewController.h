@@ -6,18 +6,7 @@
 //  Copyright Markus Emrich 2010. All rights reserved.
 //
 
-#import "JDDroppableView.h"
-
-@interface TestViewController : UIViewController <JDDroppableViewDelegate>
-
-@property (nonatomic, strong) UIScrollView *scrollView;
-@property (nonatomic, strong) UIView *dropTarget1;
-@property (nonatomic, strong) UIView *dropTarget2;
-@property (nonatomic, assign) CGPoint lastPosition;
-
-- (void)relayout;
-- (void)addView:(id)sender;
-- (void)scrollToBottomAnimated:(BOOL)animated;
+@interface TestViewController : UIViewController
 
 @end
 
