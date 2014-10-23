@@ -7,9 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D2652E99164C0DB000C49837 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2652E98164C0DB000C49837 /* Default-568h@2x.png */; };
-		D272CB0D151FA4EF006F8770 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = D272CB0B151FA4EF006F8770 /* icon.png */; };
-		D272CB0E151FA4EF006F8770 /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D272CB0C151FA4EF006F8770 /* icon@2x.png */; };
+		281108B919F9A09500A5A2E3 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 281108B819F9A09500A5A2E3 /* Images.xcassets */; };
 		D286AD5C151F966E00110CE1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D286AD5B151F966E00110CE1 /* UIKit.framework */; };
 		D286AD5E151F966E00110CE1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D286AD5D151F966E00110CE1 /* Foundation.framework */; };
 		D286AD60151F966E00110CE1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D286AD5F151F966E00110CE1 /* CoreGraphics.framework */; };
@@ -18,14 +16,10 @@
 		D286AD89151F9B5D00110CE1 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD7F151F9B5D00110CE1 /* TestViewController.m */; };
 		D286AD8A151F9B5D00110CE1 /* JDDroppableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD83151F9B5D00110CE1 /* JDDroppableView.m */; };
 		D286AD8C151F9B5D00110CE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D286AD86151F9B5D00110CE1 /* main.m */; };
-		D2F52C31151FA85F004241E6 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = D2F52C2F151FA85F004241E6 /* Default.png */; };
-		D2F52C32151FA85F004241E6 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D2F52C30151FA85F004241E6 /* Default@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		D2652E98164C0DB000C49837 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		D272CB0B151FA4EF006F8770 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
-		D272CB0C151FA4EF006F8770 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
+		281108B819F9A09500A5A2E3 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ../DroppableViewTest/Images.xcassets; sourceTree = "<group>"; };
 		D286AD57151F966E00110CE1 /* DroppableViewTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DroppableViewTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D286AD5B151F966E00110CE1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		D286AD5D151F966E00110CE1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -40,8 +34,6 @@
 		D286AD85151F9B5D00110CE1 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D286AD86151F9B5D00110CE1 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		D286AD87151F9B5D00110CE1 /* Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
-		D2F52C2F151FA85F004241E6 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
-		D2F52C30151FA85F004241E6 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,33 +51,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		D272CB09151FA4EF006F8770 /* Ressources */ = {
-			isa = PBXGroup;
-			children = (
-				D272CB0A151FA4EF006F8770 /* images */,
-			);
-			path = Ressources;
-			sourceTree = "<group>";
-		};
-		D272CB0A151FA4EF006F8770 /* images */ = {
-			isa = PBXGroup;
-			children = (
-				D2F52C2F151FA85F004241E6 /* Default.png */,
-				D2F52C30151FA85F004241E6 /* Default@2x.png */,
-				D2652E98164C0DB000C49837 /* Default-568h@2x.png */,
-				D272CB0B151FA4EF006F8770 /* icon.png */,
-				D272CB0C151FA4EF006F8770 /* icon@2x.png */,
-			);
-			path = images;
-			sourceTree = "<group>";
-		};
 		D286AD4C151F966D00110CE1 = {
 			isa = PBXGroup;
 			children = (
 				D286AD84151F9B5D00110CE1 /* SupportingFiles */,
 				D286AD7B151F9B5D00110CE1 /* Classes */,
 				D286AD80151F9B5D00110CE1 /* Library */,
-				D272CB09151FA4EF006F8770 /* Ressources */,
 				D286AD5A151F966E00110CE1 /* Frameworks */,
 				D286AD58151F966E00110CE1 /* Products */,
 			);
@@ -144,6 +115,7 @@
 				D286AD85151F9B5D00110CE1 /* Info.plist */,
 				D286AD86151F9B5D00110CE1 /* main.m */,
 				D286AD87151F9B5D00110CE1 /* Prefix.pch */,
+				281108B819F9A09500A5A2E3 /* Images.xcassets */,
 			);
 			path = SupportingFiles;
 			sourceTree = "<group>";
@@ -198,11 +170,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D272CB0D151FA4EF006F8770 /* icon.png in Resources */,
-				D272CB0E151FA4EF006F8770 /* icon@2x.png in Resources */,
-				D2F52C31151FA85F004241E6 /* Default.png in Resources */,
-				D2F52C32151FA85F004241E6 /* Default@2x.png in Resources */,
-				D2652E99164C0DB000C49837 /* Default-568h@2x.png in Resources */,
+				281108B919F9A09500A5A2E3 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +212,8 @@
 		D286AD70151F966E00110CE1 /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = SupportingFiles/Prefix.pch;
