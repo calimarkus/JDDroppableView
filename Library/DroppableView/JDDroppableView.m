@@ -9,25 +9,17 @@
 #import "JDDroppableView.h"
 
 
-#define DROPPABLEVIEW_ANIMATION_DURATION 0.33
+const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 
 @interface JDDroppableView ()
 @property (nonatomic, strong) NSMutableArray *dropTargets;
+@property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, weak) UIView *activeDropTarget;
 @property (nonatomic, weak) UIView *outerView;
-@property (nonatomic, weak) UIScrollView *scrollView;
-@property (nonatomic, assign) BOOL isDragging;
+
 @property (nonatomic, assign) BOOL didInitalizeReturnPosition;
-
-- (void)commonInit;
-
-- (void)beginDrag;
-- (void)dragAtPosition:(UITouch*)touch;
-- (void)endDrag;
-
-- (void)changeSuperView;
+@property (nonatomic, assign) BOOL isDragging;
 @end
-
 
 
 @implementation JDDroppableView
@@ -68,13 +60,15 @@
 {
     [super touchesBegan:touches withEvent:event];
 	[self beginDrag];
-	[self dragAtPosition: [touches anyObject]];
+    [self dragAtPosition:[touches anyObject]
+                animated:YES];
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesMoved:touches withEvent:event];
-    [self dragAtPosition: [touches anyObject]];
+    [self dragAtPosition:[touches anyObject]
+                animated:NO];
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
@@ -139,10 +133,12 @@
 }
 
 
-- (void)dragAtPosition:(UITouch*)touch;
+- (void)dragAtPosition:(UITouch*)touch animated:(BOOL)animated;
 {
+    if (!self.isDragging) return;
+    
     // animate into new position
-	[UIView animateWithDuration:DROPPABLEVIEW_ANIMATION_DURATION animations:^{
+    [UIView animateWithDuration:animated?JDDroppableViewDefaultAnimationDuration:0.0 animations:^{
         self.center = [touch locationInView: self.superview];
     }];
     
@@ -200,9 +196,10 @@
     }
 }
 
-
-- (void) endDrag
+- (void)endDrag
 {
+    if (!self.isDragging) return;
+    
     // inform delegate
     if([self.delegate respondsToSelector: @selector(droppableViewEndedDragging:onTarget:)]) {
         [self.delegate droppableViewEndedDragging: self onTarget:self.activeDropTarget];
@@ -228,7 +225,7 @@
 	
     // animate back to original position
     if (shouldAnimateBack) {
-        [UIView animateWithDuration:DROPPABLEVIEW_ANIMATION_DURATION animations:^{
+        [UIView animateWithDuration:JDDroppableViewDefaultAnimationDuration animations:^{
             self.center = self.returnPosition;
         }];
     }
