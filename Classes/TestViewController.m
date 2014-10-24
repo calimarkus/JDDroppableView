@@ -133,23 +133,22 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     self.lastPosition = CGPointMake(0, -100);
     CGFloat contentWidth = self.scrollView.contentSize.width - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
 	
-    // iterate through all subviews
-	for (UIView* subview in self.scrollView.subviews)
+    // iterate through all cards
+    NSArray *cards = [self.scrollView.subviews filteredArrayUsingPredicate:
+                      [NSPredicate predicateWithFormat:@"self.class == %@" argumentArray:@[[JDDroppableView class]]]];
+    cards = [cards sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tag" ascending:YES]]];
+    
+	for (UIView* card in cards)
     {
-        // ignore scroll indicators
-        if (!subview.userInteractionEnabled) {
-            continue;
-        }
-        
         // create new position
-		frame = subview.frame;
+		frame = card.frame;
         frame.origin.x = posx;
         frame.origin.y = posy;
         
         // update frame (if it did change)
-        if (frame.origin.x != subview.frame.origin.x ||
-            frame.origin.y != subview.frame.origin.y) {
-            subview.frame = frame;
+        if (frame.origin.x != card.frame.origin.x ||
+            frame.origin.y != card.frame.origin.y) {
+            card.frame = frame;
         }
         
         // save last position
@@ -181,12 +180,15 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 
 - (void)addView:(id)sender
 {
+    static NSInteger viewCount = 0;
+    
     JDDroppableView * dropview = [[JDDroppableView alloc] initWithDropTarget: self.dropTarget1];
     [dropview addDropTarget:self.dropTarget2];
     dropview.backgroundColor = [UIColor whiteColor];
     dropview.layer.cornerRadius = 3.0;
     dropview.frame = CGRectMake(self.lastPosition.x, self.lastPosition.y, self.cardSize.width, self.cardSize.height);
     dropview.delegate = self;
+    dropview.tag = viewCount++;
     
     [self.scrollView addSubview: dropview];
     
