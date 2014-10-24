@@ -59,14 +59,6 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 - (void)touchesBegan:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesBegan:touches withEvent:event];
-    
-    // don't do anything, if scrollview is actively tracking atm
-    for (UIGestureRecognizer *recognizer in self.scrollView.gestureRecognizers) {
-        if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
-            return;
-        }
-    }
-    
 	[self beginDrag];
     [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
                 animated:YES];
@@ -122,6 +114,13 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 
 - (void)beginDrag;
 {
+    // don't do anything, if scrollview is actively tracking atm
+    for (UIGestureRecognizer *recognizer in self.scrollView.gestureRecognizers) {
+        if (recognizer.state == UIGestureRecognizerStateBegan || recognizer.state == UIGestureRecognizerStateChanged) {
+            return;
+        }
+    }
+    
     // remember state
     self.isDragging = YES;
     
