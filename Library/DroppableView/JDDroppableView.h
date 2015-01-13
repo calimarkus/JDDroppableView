@@ -15,6 +15,7 @@
 
 @property (nonatomic, assign) CGPoint returnPosition;
 @property (nonatomic, assign) BOOL shouldUpdateReturnPosition;
+@property (nonatomic, assign) CGSize  stickSize;
 
 - (id)initWithDropTarget:(UIView*)target;
 

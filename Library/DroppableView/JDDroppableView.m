@@ -19,6 +19,7 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 
 @property (nonatomic, assign) BOOL didInitalizeReturnPosition;
 @property (nonatomic, assign) BOOL isDragging;
+@property (nonatomic, assign) BOOL shouldAnimateOnMove;
 @end
 
 
@@ -52,6 +53,8 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 - (void)commonInit;
 {
     self.shouldUpdateReturnPosition = YES;
+    self.stickSize = CGSizeZero;
+    self.shouldAnimateOnMove = NO;
 }
 
 #pragma mark UIResponder (touch handling)
@@ -60,15 +63,26 @@ const CGFloat JDDroppableViewDefaultAnimationDuration = 0.33;
 {
     [super touchesBegan:touches withEvent:event];
 	[self beginDrag];
-    [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
-                animated:YES];
+    if (CGSizeEqualToSize(self.stickSize, CGSizeZero)) {
+        [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
+                    animated:YES];
+    } else {
+        self.shouldAnimateOnMove = YES;
+    }
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent*)event
 {
     [super touchesMoved:touches withEvent:event];
-    [self dragAtPosition:[[touches anyObject] locationInView:self.superview]
-                animated:NO];
+    CGPoint touchPoint = [[touches anyObject] locationInView:self.superview];
+
+    BOOL isTouchOutOfStickZone  = self.stickSize.width  < (fabs(touchPoint.x - self.returnPosition.x))
+                               || self.stickSize.height < (fabs(touchPoint.y - self.returnPosition.y));
+    if (isTouchOutOfStickZone || !self.shouldAnimateOnMove) {
+        [self dragAtPosition:touchPoint
+                    animated:self.shouldAnimateOnMove && isTouchOutOfStickZone];
+        self.shouldAnimateOnMove = NO;
+    }
 }
 
 - (void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event
