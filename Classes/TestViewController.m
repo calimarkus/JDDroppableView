@@ -23,6 +23,7 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 @property (nonatomic, strong) UIView *dropTarget1;
 @property (nonatomic, strong) UIView *dropTarget2;
 @property (nonatomic, assign) CGPoint lastPosition;
+@property (nonatomic, strong) UISlider *slider;
 @end
 
 @implementation TestViewController
@@ -54,11 +55,34 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     button.showsTouchWhenHighlighted = YES;
     button.adjustsImageWhenHighlighted = YES;
     button.frame = CGRectMake(20,
-                              self.view.frame.size.height - 52,
+                              self.view.frame.size.height - 100,
                               self.view.frame.size.width - 40, // width
                               32); // height
     [self.view addSubview: button];
-	
+    
+    // Sticky slider
+    _slider = [[UISlider alloc] initWithFrame:CGRectMake(20,
+                                                         self.view.frame.size.height - 40,
+                                                         self.view.frame.size.width - 40,
+                                                         32)];
+    
+    self.slider.minimumValue = 0;
+    self.slider.maximumValue = 120;
+    [self.slider  addTarget:self
+                action:@selector(stickSliderChanged)
+      forControlEvents:UIControlEventValueChanged];
+    self.slider.continuous = NO;
+    [self.view addSubview:self.slider];
+    
+    // Label for slider
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(180,
+                                                              CGRectGetMinY(self.slider.frame) - 18,
+                                                              200,
+                                                              20)];
+    label.text = @"Adjust drag stickness";
+    label.font = [UIFont fontWithName:@"Superclarendon-Light" size:10];
+    [self.view addSubview:label];
+    
 	// drop target 1
 	self.dropTarget1 = [[UIView alloc] init];
     self.dropTarget1.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
@@ -114,6 +138,11 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     });
 }
 
+- (NSArray *)cards {
+    return [self.scrollView.subviews filteredArrayUsingPredicate:
+            [NSPredicate predicateWithFormat:@"self.class == %@" argumentArray:@[[JDDroppableView class]]]];
+}
+
 #pragma layout
 
 - (void)relayout
@@ -134,8 +163,7 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     CGFloat contentWidth = self.scrollView.contentSize.width - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
 	
     // iterate through all cards
-    NSArray *cards = [self.scrollView.subviews filteredArrayUsingPredicate:
-                      [NSPredicate predicateWithFormat:@"self.class == %@" argumentArray:@[[JDDroppableView class]]]];
+    NSArray *cards = [self cards];
     cards = [cards sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"tag" ascending:YES]]];
     
 	for (UIView* card in cards)
@@ -188,6 +216,7 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     dropview.layer.cornerRadius = 3.0;
     dropview.frame = CGRectMake(self.lastPosition.x, self.lastPosition.y, self.cardSize.width, self.cardSize.height);
     dropview.delegate = self;
+    dropview.stickSize = CGSizeMake(self.slider.value, self.slider.value);
     dropview.tag = viewCount++;
     
     [self.scrollView addSubview: dropview];
@@ -214,6 +243,11 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     }
 }
 
+- (void)stickSliderChanged {
+    for (JDDroppableView *card in [self cards]) {
+        card.stickSize = CGSizeMake(self.slider.value, self.slider.value);
+    }
+}
 
 #pragma JDDroppableViewDelegate
 
