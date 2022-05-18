@@ -9,31 +9,31 @@
 #import "TestViewController.h"
 #import "JDDroppableView.h"
 
-#import <QuartzCore/QuartzCore.h>
+#import <CoreGraphics/CoreGraphics.h>
 
-const CGFloat   TestViewControllerViewMargin = 3.0;
-const NSInteger TestViewControllerViewCountPerRow = 4;
-const NSInteger TestViewControllerViewCountPerRowTablet = 6;
+const CGFloat TestViewControllerViewMargin = 5.0;
+const CGFloat TestViewControllerTargetViewSize = 34.0;
 
 @interface TestViewController () <JDDroppableViewDelegate>
 @property (nonatomic, assign) CGSize cardSize;
 @property (nonatomic, assign) NSInteger cardsPerRow;
 
 @property (nonatomic, strong) UIScrollView *scrollView;
+@property (nonatomic, strong) UIView *button;
 @property (nonatomic, strong) UIView *dropTarget1;
 @property (nonatomic, strong) UIView *dropTarget2;
 @property (nonatomic, assign) CGPoint lastPosition;
+@property (nonatomic, assign) UIColor *previousBackgroundColor;
 @end
 
 @implementation TestViewController
 
-- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)init
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    self = [super init];
     if (self) {
-        // init viewcount
         BOOL isIpad = ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad);
-        self.cardsPerRow = isIpad ? TestViewControllerViewCountPerRowTablet : TestViewControllerViewCountPerRow;
+        self.cardsPerRow = isIpad ? 6 : 4;
     }
     return self;
 }
@@ -53,28 +53,23 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     button.layer.cornerRadius = 5.0;
     button.showsTouchWhenHighlighted = YES;
     button.adjustsImageWhenHighlighted = YES;
-    button.frame = CGRectMake(20,
-                              self.view.frame.size.height - 52,
-                              self.view.frame.size.width - 40, // width
-                              32); // height
     [self.view addSubview: button];
+    self.button = button;
 	
 	// drop target 1
 	self.dropTarget1 = [[UIView alloc] init];
     self.dropTarget1.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	self.dropTarget1.backgroundColor = [UIColor darkGrayColor];
-	self.dropTarget1.frame = CGRectMake(0, 0, 30, 30);
-	self.dropTarget1.center = CGPointMake(self.view.frame.size.width/2 - 50, button.frame.origin.y - 35);
-    self.dropTarget1.layer.cornerRadius = 15;
+    self.dropTarget1.layer.cornerRadius = TestViewControllerTargetViewSize / 2.0;
+    self.dropTarget1.frame = CGRectMake(0, 0, TestViewControllerTargetViewSize, TestViewControllerTargetViewSize);
 	[self.view addSubview: self.dropTarget1];
 	
 	// drop target 2
 	self.dropTarget2 = [[UIView alloc] init];
     self.dropTarget2.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	self.dropTarget2.backgroundColor = [UIColor redColor];
-	self.dropTarget2.frame = CGRectMake(0, 0, 30, 30);
-	self.dropTarget2.center = CGPointMake(self.view.frame.size.width/2 + 50, button.frame.origin.y - 35);
-    self.dropTarget2.layer.cornerRadius = 15;
+    self.dropTarget2.layer.cornerRadius = TestViewControllerTargetViewSize / 2.0;
+    self.dropTarget2.frame = CGRectMake(0, 0, TestViewControllerTargetViewSize, TestViewControllerTargetViewSize);
 	[self.view addSubview: self.dropTarget2];
 	
 	// scrollview
@@ -82,32 +77,35 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 	self.scrollView.backgroundColor = [UIColor colorWithWhite:0.77 alpha:1.0];
 	self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-	self.scrollView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 5, 5, 5);
 	self.scrollView.contentInset = UIEdgeInsetsMake(6, 6, 6, 6);
+    self.scrollView.scrollIndicatorInsets = self.scrollView.contentInset;
     self.scrollView.layer.cornerRadius = 5.0;
-	self.scrollView.frame = CGRectMake(20,40, self.view.frame.size.width - 40, self.dropTarget1.center.y - 70);
     self.scrollView.userInteractionEnabled = NO;
 	self.scrollView.canCancelContentTouches = NO;
 	[self.view addSubview: self.scrollView];
-    
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+
     // calculate card size
     CGFloat contentWidth  = self.scrollView.frame.size.width  - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
     CGFloat width = ((contentWidth-TestViewControllerViewMargin*(self.cardsPerRow-1))/self.cardsPerRow);
-	self.cardSize = CGSizeMake(width,floor(width/10*18));
-	
-	// animate some draggable views in
+    self.cardSize = CGSizeMake(width,floor(width/10*18));
+
+    // animate some draggable views in
     NSInteger rowCount = ceil(self.scrollView.frame.size.height/self.cardSize.height);
     NSInteger numberOfViews = self.cardsPerRow * rowCount - 2;
     CGFloat animationTimePerView = 0.15;
-	for (int i = 0; i < numberOfViews; i++) {
+    for (int i = 0; i < numberOfViews; i++) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(i*animationTimePerView * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self addView:nil];
             if (i%self.cardsPerRow==0) {
                 [self scrollToBottomAnimated:YES];
             }
         });
-	}
-    
+    }
+
     // reenable userinteraction after animation ended
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(numberOfViews*animationTimePerView * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         self.scrollView.userInteractionEnabled = YES;
@@ -115,6 +113,26 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 }
 
 #pragma layout
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+
+    const CGFloat topInset = self.view.safeAreaInsets.top + 20.0;
+    const CGFloat bottomInset = self.view.safeAreaInsets.bottom + 20.0;
+
+    self.button.frame = CGRectMake(20,
+                                   self.view.frame.size.height - bottomInset - 44,
+                                   self.view.frame.size.width - 40, // width
+                                   44); // height
+
+    self.dropTarget1.center = CGPointMake(self.view.frame.size.width/2 - 50, self.button.frame.origin.y - 35);
+    self.dropTarget2.center = CGPointMake(self.view.frame.size.width/2 + 50, self.button.frame.origin.y - 35);
+
+    self.scrollView.frame = CGRectMake(20,
+                                       topInset,
+                                       self.view.frame.size.width - 40,
+                                       self.dropTarget1.center.y - topInset - 30);
+}
 
 - (void)relayout
 {
@@ -131,7 +149,6 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 	float posy = 0;
 	CGRect frame = CGRectZero;
     self.lastPosition = CGPointMake(0, -100);
-    CGFloat contentWidth = self.scrollView.contentSize.width - self.scrollView.contentInset.left - self.scrollView.contentInset.right;
 	
     // iterate through all cards
     NSArray *cards = [self.scrollView.subviews filteredArrayUsingPredicate:
@@ -173,7 +190,7 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     }
     
     // update content size
-    self.scrollView.contentSize = CGSizeMake(contentWidth, posy);
+    self.scrollView.contentSize = CGSizeMake(self.scrollView.contentSize.width, posy);
     
 	[UIView commitAnimations];
 }
@@ -219,6 +236,7 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 
 - (void)droppableViewBeganDragging:(JDDroppableView*)view;
 {
+    self.previousBackgroundColor = view.backgroundColor;
 	[UIView animateWithDuration:0.33 animations:^{
         view.backgroundColor = [UIColor orangeColor];
         view.alpha = 0.8;
@@ -232,14 +250,30 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
 
 - (void)droppableViewEndedDragging:(JDDroppableView*)view onTarget:(UIView *)target
 {
-	[UIView animateWithDuration:0.33 animations:^{
-        if (!target) {
-            view.backgroundColor = [UIColor whiteColor];
-        } else {
-            view.backgroundColor = [UIColor darkGrayColor];
-        }
-        view.alpha = 1.0;
-    }];
+    if (target == self.dropTarget2) {
+        // animate out and remove view
+        [UIView animateWithDuration:0.33 animations:^{
+            view.transform = CGAffineTransformMakeScale(0.2, 0.2);
+            view.alpha = 0.2;
+            view.center = target.center;
+        } completion:^(BOOL finished) {
+            [view removeFromSuperview];
+        }];
+
+        // update layout
+        [self relayout];
+        [self.scrollView flashScrollIndicators];
+    } else {
+        [UIView animateWithDuration:0.33 animations:^{
+            if (!target) {
+                view.backgroundColor = self.previousBackgroundColor;
+            } else {
+                view.backgroundColor = [UIColor darkGrayColor];
+            }
+            view.alpha = 1.0;
+        }];
+    }
+
 }
 
 - (void)droppableView:(JDDroppableView*)view enteredTarget:(UIView*)target
@@ -263,19 +297,6 @@ const NSInteger TestViewControllerViewCountPerRowTablet = 6;
     if (target == self.dropTarget1) {
         return YES;
     }
-    
-    // animate out and remove view
-    [UIView animateWithDuration:0.33 animations:^{
-        view.transform = CGAffineTransformMakeScale(0.2, 0.2);
-        view.alpha = 0.2;
-        view.center = target.center;
-    } completion:^(BOOL finished) {
-        [view removeFromSuperview];
-    }];
-    
-    // update layout
-    [self relayout];
-    [self.scrollView flashScrollIndicators];
     
     return NO;
 }
