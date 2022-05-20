@@ -12,11 +12,13 @@ You can define views as drop targets like those gray & red circles. You will the
 
 Subclass any view from `JDDroppableView` and you are ready to go. If you want to specify certain views as drop-targets, you can use any of the following APIs to do so:
 
-    - (id)initWithDropTarget:(UIView*)target;
-    - (void)addDropTarget:(UIView*)target;
-    - (void)removeDropTarget:(UIView*)target;
-    - (void)replaceDropTargets:(NSArray*)targets;
+```objc
+    - (id)initWithDropTarget:(UIView *)target;
+    - (void)addDropTarget:(UIView *)target;
+    - (void)removeDropTarget:(UIView *)target;
+    - (void)replaceDropTargets:(NSArray *)targets;
+```
 
 - `target` is a view (outside of the scrollview), to where the element should be draggable
 
-**NOTE:** If you use a DroppableView within a `UIScrollView`, you need to set `canCancelContentTouches = NO;` on the scrollView.
+If you use a DroppableView within a `UIScrollView`, you need to set `canCancelContentTouches = NO;` on the scrollView.
